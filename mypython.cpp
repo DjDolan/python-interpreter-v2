@@ -52,6 +52,7 @@ int main() {
 		}
 		else if(token == 3) {
 			string if_statement = "";
+			bool nested = false;
 
 			//evaluate if statement
 			while(token) {
@@ -60,7 +61,31 @@ int main() {
 					break;
 				}
 
+				
+
 				if_statement += yytext;
+				token = yylex();
+			}
+
+			while(token) {
+				//check if nested
+				if(token == 14) {
+					token = yylex();
+					if (token == 14) {
+						token = yylex();
+						if(token == 14) {
+							token = yylex();
+							if(token != 14) {
+								nested = true;
+								break;
+							}
+						}
+					}
+				} //nested check end
+
+				//if nested is true then is part of if block
+				//else it is another line
+
 				token = yylex();
 			}
 		}

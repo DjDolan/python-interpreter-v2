@@ -9,7 +9,7 @@
 "if"							return IF_STATEMENT;
 "else"							return ELSE_STATEMENT;
 "def"							return DEFINITION;
-"+-*/"							return MATH;
+[\+\-\*\/]						return MATH;
 ">"								return COMPARISON;
 "<"								return COMPARISON;
 ">="							return COMPARISON;
@@ -22,7 +22,7 @@
 [\0\n]							return EOL;
 #								return COMMENT;
 .								return ALL;
-"   *[a-zA-Z][_a-zA-Z0-9\!]*" 	return NESTED;
+"\t*[a-zA-Z0-9]*"				return NESTED;
 \"(.*?)\"						return QUOTE;
 %%
 

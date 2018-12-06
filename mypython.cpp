@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "variable.h"
 #include "expressions.h"
+#include "ifstatement.h"
 
 using namespace std;
 
@@ -21,6 +22,7 @@ int main() {
 	token = yylex();
 
 	while(token) {
+		//cout << token << " : " << yytext << endl;
 		//if token is a print statement
 		if(token == 1) {
 			string statement = "";
@@ -48,6 +50,21 @@ int main() {
 				token = yylex();
 			}
 		}
+		else if(token == 3) {
+			string if_statement = "";
+
+			//evaluate if statement
+			while(token) {
+				if(token == 6) {
+					evaluate_if_statement(if_statement);
+					break;
+				}
+
+				if_statement += yytext;
+				token = yylex();
+			}
+		}
+		//if it an identifier or variable
 		else if(token == 9) {
 			bool exists = false;
 			string expression = "";
@@ -90,6 +107,17 @@ int main() {
 				//cout << "mutated variable" << endl;
 			}
 		}
+		//if comment ignore
+		else if(token == 12) {
+			while(token) {
+				if(token == 13) {
+					token = yylex();
+					break;
+				}
+
+				token == yylex();
+			}
+		}
 
 		token = yylex();
 	}
@@ -98,12 +126,6 @@ int main() {
 	// for(int i = 0; i < vars.size(); i++) {
 	// 	cout << "[" << vars[i].get_variable_name() << "][" << vars[i].get_value() << "]" << endl;
 	// }	
-
-	// cout << "Mutated Variables: ";
-	// for(int j = 0; j < mutated_vars.size(); j++) {
-	// 	cout << "[" << mutated_vars[j] << "] ";
-	// }
-	// cout << endl;
 
 	return 0;
 }

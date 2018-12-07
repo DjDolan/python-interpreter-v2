@@ -28,7 +28,7 @@ int main() {
 	token = yylex();
 
 	while(token) {
-		// cout << "[" << token << "][" << yytext << "]" << endl;
+		//cout << "[" << token << "][" << yytext << "]" << endl;
 		//if token is a print statement
 		if(token == 1) {
 			string statement = "";
@@ -174,8 +174,14 @@ int main() {
 				Function *newFunc = new Function();
 				newFunc->set_func_name(func_name);
 
+				stack<string> operands;
+				string operand1;
+				string operand2;
+				string comparator;
+
 				//find return statement to do get function value
 				while(token) {
+					//return statement
 					if(token == 17) {
 						token = yylex(); //get the return
 
@@ -192,6 +198,7 @@ int main() {
 						break;
 					}
 
+					//variables in function
 					else if(token == 9) {
 						bool exists = false;
 						string expression = "";
@@ -207,7 +214,7 @@ int main() {
 							while(token) {
 								//evaluate the expression to push to vector
 								if(token == 13) {
-									newVar->set_value(evaluate(expression, func_vars));
+									newVar->set_value(evaluate(expression, func_vars, funcs, func_vars));
 									break;
 								}
 								//skip variable name and equal sign
@@ -238,38 +245,99 @@ int main() {
 								token = yylex();
 							}
 
-							for(int i = 0; i < vars.size(); i++) {
-								if(vars[i].get_variable_name() == mutated_var) {
-									vars[i].set_value(evaluate(expression, vars));
+							for(int i = 0; i < func_vars.size(); i++) {
+								if(func_vars[i].get_variable_name() == mutated_var) {
+									func_vars[i].set_value(evaluate(expression, vars, funcs, func_vars));
 									break;
 								}
 							}
+						}
+					}
+					//if statements
+					else if(token == 3) {
+						//get if statement values
+						while(token) {
+							//if colon end if statement
+							if(token == 6) break;
+							//if identifier then push value
+							else if(token == 9) {
+								for(int i = 0; i < func_vars.size(); i++) {
+									if(yytext == func_vars[i].get_variable_name()) {
+										operands.push(to_string(func_vars[i].get_value()));
+										break;
+									}
+								}
+							}
+							//if integer push
+							else if(token == 10) {
+								operands.push(yytext);
+							}
+							//if comparator
+							else if(token == 5) {
+								comparator = yytext;
+							}
+
+							token = yylex();
+						}
+
+						while(!operands.empty()) {
+							operand2 = operands.top(); operands.pop();
+							operand1 = operands.top(); operands.pop();
+						}
+						
+						is_true = evaluate_if_statement(operand1, operand2, comparator);
+
+						//TRUE if statement
+						if(is_true == true) {
+							token = yylex(); token = yylex();
+						}
+						//FALSE if statement
+						else {
+							token = yylex(); token = yylex();
+							if(token == 15) {
+								while(token) {
+									if(token == 13) {
+										token = yylex();
+										break;
+									}
+									token = yylex();
+								}
+							}
+						}
+					}
+					//else statement
+					else if(token == 4) {
+						if(is_true == true) {
+							token = yylex(); token = yylex(); token = yylex();
+							if(token == 15) {
+								token = yylex();
+								while(token) {
+									if(token == 15) {
+										token = yylex();
+										break;
+									}
+									cout << "skip " << yytext << endl;
+									token = yylex();
+								}
+							}
+						}
+						else {
+							token = yylex(); token = yylex();
 						}
 					}
 
 					token = yylex();
 				}
 			}
-
-			token = yylex();
 		}
 		//if it an identifier or variable
 		else if(token == 9) {
-				bool exists = false;
+				bool exists_var = false;
 				string expression = "";
-
-				//check if identifier exists
-				for(int i = 0; i < vars.size(); i++) {
-					if(yytext == vars[i].get_variable_name()) {
-						mutated_vars.push_back(yytext);
-						exists = true;
-						break;
-					}
-				}
 
 				//if it does not exist in variables
 				//then create one
-				if(exists == false) {
+				if(exists_var == false) {
 					Variable *newVar = new Variable;
 					newVar->set_variable_name(yytext);
 					newVar->set_storage_location_number(storage_id); storage_id++;
@@ -278,7 +346,7 @@ int main() {
 					while(token) {
 						//evaluate the expression to push to vector
 						if(token == 13) {
-							newVar->set_value(evaluate(expression, vars));
+							newVar->set_value(evaluate(expression, vars, funcs, func_vars));
 							break;
 						}
 						//skip variable name and equal sign
@@ -310,7 +378,7 @@ int main() {
 
 					for(int i = 0; i < vars.size(); i++) {
 						if(vars[i].get_variable_name() == mutated_var) {
-							vars[i].set_value(evaluate(expression, vars));
+							vars[i].set_value(evaluate(expression, vars, funcs, func_vars));
 							break;
 						}
 					}
@@ -329,17 +397,6 @@ int main() {
 
 		token = yylex();
 	}
-		
-
-	// cout << "Variables: \n";
-	// for(int i = 0; i < vars.size(); i++) {
-	// 	cout << "[" << vars[i].get_variable_name() << "][" << vars[i].get_value() << "]" << endl;
-	// }	
-
-	// cout << "Function Variables: \n";
-	// for(int i = 0; i < func_vars.size(); i++) {
-	// 	cout << "[" << func_vars[i].get_variable_name() << "][" << func_vars[i].get_value() << "]" << endl;
-	// }	
 
 	return 0;
 }

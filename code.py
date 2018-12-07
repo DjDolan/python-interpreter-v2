@@ -1,8 +1,9 @@
-x = 5
-y = 6
-
 def f():
-   x = 1
-   y = 2
-   z = x + y
-   return z
+   a = 100
+   b = 200
+   c = 300
+   m = a * b + c
+   return m
+
+x = f()
+print("value of function is=",x)

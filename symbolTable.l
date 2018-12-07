@@ -26,6 +26,7 @@
 \"(.*?)\"						return QUOTE;
 "return "						return RETURNKEY;
 \(\)							return 18;
+"f()"							return 19;
 %%
 
 int yywrap(void) {

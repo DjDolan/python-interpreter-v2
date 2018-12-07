@@ -14,3 +14,4 @@
 #define ALL 14
 #define NESTED 15
 #define QUOTE 16
+#define RETURNKEY 17

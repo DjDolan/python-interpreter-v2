@@ -22,8 +22,10 @@
 [\0\n]							return EOL;
 #								return COMMENT;
 .								return ALL;
-"\t*[a-zA-Z0-9]*"				return NESTED;
+[ ]{3,6}						return NESTED;
 \"(.*?)\"						return QUOTE;
+"return "						return RETURNKEY;
+\(\)							return 18;
 %%
 
 int yywrap(void) {

@@ -4,13 +4,44 @@
 #include <iostream>
 #include <vector>
 #include <stdio.h>
+#include <string>
+#include "variable.h"
+
+using namespace std;
 
 extern int yylex();
 extern int yylineno;
 extern char* yytext;
 
-void evaluate_if_statement(string if_stmnt) {
-	cout << if_stmnt << endl;
+bool evaluate_if_statement(string op1, string op2, string cmp) {
+	if(cmp == ">") {
+		if(stoi(op1) > stoi(op2)) return true;
+		else return false;
+	}
+	else if(cmp == "<") {
+		if(stoi(op1) < stoi(op2)) return true;
+		else return false;
+	}
+	else if(cmp == ">=") {
+		if(stoi(op1) >= stoi(op2)) return true;
+		else return false;
+	}
+	else if(cmp == "<=") {
+		if(stoi(op1) <= stoi(op2)) return true;
+		else return false;
+	}
+	else if(cmp == "==") {
+		if(stoi(op1) == stoi(op2)) return true;
+		else return false;
+	}
+	else if(cmp == "!=") {
+		if(stoi(op1) != stoi(op2)) return true;
+		else return false;
+	}
+	else {
+		cerr << "error : no comparator" << endl;
+		exit(1);
+	}
 }
 
 #endif // IFSTATEMENT_H_INCLUDED

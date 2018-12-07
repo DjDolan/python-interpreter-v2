@@ -1,8 +1,8 @@
-x = 890000
-y = 1000
+x = 5
+y = 6
 
-if x>80000:
-   d = x / y
-
-if x<80000:
-   d = x * y
+def f():
+   x = 1
+   y = 2
+   z = x + y
+   return z

@@ -391,7 +391,7 @@ int main() {
 					token = yylex();
 					break;
 				}
-				token == yylex();
+				token = yylex();
 			}
 		}
 
